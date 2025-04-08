@@ -1,0 +1,232 @@
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+    
+        <!--<style> * {scrollbar-width: thin; scrollbar-color: #4e91c9 #ffffff;} ::-webkit-scrollbar {width: 5px; height: 5px;} ::-webkit-scrollbar-track {background: white;} ::-webkit-scrollbar-thumb {background: #4e91c9;} ::-webkit-scrollbar-thumb:hover {background: #626d79e3;} td {font-family: Courier New; font-size: 13px; background-color:white;} #vertical {color: grey; -webkit-transform:rotate(180deg); -moz-transform:rotate(180deg); -o-transform: rotate(90deg); -ms-transform:rotate(90deg); transform: rotate(90deg); white-space:nowrap; display:block; bottom:0; width:2px; height:20px;} 
+                </style>  -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stylesheets/styles.css') }}"></link>
+        
+    </head>
+
+    <body>
+        <div class="header_pages">
+            
+            
+            <a class='label' href="{{ url_for('home') }}">Home Page </a>
+
+            
+            <a class='label' href="{{ url_for('stats') }}" method="POST">Stats </a>
+
+           
+            <a class="label" href="{{ url_for('exon_alignment_display') }}" method="POST">Exons alignments </a>
+            
+
+            <a class="label" href="{{ url_for('macse_alignments') }}" method="POST"> MACSE alignments </a>
+
+            <a class="label" href="{{ url_for('dendrogram')  }}" method="GET"> Dendrogram display </a> 
+
+
+             
+        </div>
+
+        <h2 id="macse_alignment_analysis_header">Analysis: {{analysis_name}}</h2>
+
+        <div class="main_alignment" style="display: flex">
+            <!--  Builds main alignment table 
+            you can add several tables by appending to app list 
+        and then just display them here with a flask for loop-->
+                
+        
+
+            <table class= "alignment_table" >
+            <tr >
+                <td></td>
+                {% for i in range(0, len(results_nt[0].seq), 3) %}
+                   <td></td><td id= "vertical" style="font-size: 12px;">{{str(i + 2)}}</td><td>
+                {%endfor%}
+            </tr>
+            <tr><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr>
+
+                
+                {% for i in range(len(results_nt)) %}
+                    {% if results_nt[i].id == 'Reference_Species' %}
+                        {% set i_id = replace(results_nt[i].id, '_', ' ') %}
+                    {% else %} 
+                        {% set i_id = results_nt[i].id %}
+                    {%endif%} 
+                    
+
+                    
+                    <tr>
+                        <td>  {{i_id}} </td>
+                    {% for j in range(0, len(results_nt[i].seq), 3) %}
+                            
+                            <!--{% set color = '#CCFFC4' %} -->
+                            {% set color = get_color(j) %} 
+                            
+                            {% if results_nt[i].seq[j : j + 3] in ['TAA', 'TAG', 'TGA'] %}
+                                <td style="color: red;"> {{results_nt[i].seq[j]}} </td><td style = "color:red;" > {{results_nt[i].seq[j + 1]}} </td><td style="color:red;">{{results_nt[i].seq[j + 2]}}</td>
+                            {% elif results_nt[i].seq[j : j + 3] == '---' %}
+                                
+                                <td style = "color:lightgrey;"> {{results_nt[i].seq[j]}} </td><td style = "color:lightgrey;" > {{results_nt[i].seq[j + 1]}} </td><td style = "color:lightgrey;"> {{results_nt[i].seq[j + 2]}} </td>
+                            
+                            {% elif '!' in results_nt[i].seq[j : j + 3] %}
+
+                                {% for p in results_nt[i].seq[j : j + 3] %}
+
+                                    {% if p == '!' %}
+                                        <td style="background-color: #FFB390;"> {{p}} </td>
+                                    {% else %}
+                                        <td style="background-color: {{color}};">{{p}}</td>
+                                    {% endif %}
+                                {% endfor %}
+
+                            {% else %}
+                                <td style="background-color: {{color}} ;"> {{results_nt[i].seq[j]}} </td><td style="background-color:  {{color}} ;"> {{results_nt[i].seq[j + 1]}} </td><td style="background-color: {{color}} ;"> {{results_nt[i].seq[j + 2]}} </td>
+
+                            {% endif %} 
+                        
+                            
+                    {% endfor %} 
+                    
+                                    
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        {% for j in range(len(results_aa[i].seq)) %}
+                            {% if results_aa[i].seq[j] == '-' or results_aa[i].seq[j] == '!' %}
+                            
+                                <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+                            {% elif results_aa[i].seq[j] == results_aa[0].seq[j] and results_aa[i].seq[j] != 'M' and results_aa[i].seq[j] != '*' %} 
+
+                    
+                                <td>&nbsp;</td><td style="color: #1B5500;"> {{results_aa[i].seq[j]}} </td><td>&nbsp;</td>
+
+                            {% elif results_aa[i].seq[j] == 'M' and results_aa[0].seq[j] != 'M' %}
+                                
+                                    <td style="background-color: lightgrey;">&nbsp;</td><td style="background-color: lightgrey; color: magenta;"> {{results_aa[i].seq[j]}} </td><td style="background-color: lightgrey;">&nbsp;</td>
+                                
+                            {% elif results_aa[i].seq[j] == 'M' and results_aa[0].seq[j] == 'M' %}
+                                
+                                    <td>&nbsp;</td><td style="color: magenta;"> {{results_aa[i].seq[j]}} </td><td>&nbsp;</td>
+
+                            {% elif results_aa[i].seq[j] == '*' %}
+                                    <td>&nbsp;</td><td style="color: red;"> {{results_aa[i].seq[j]}} </td><td>&nbsp;</td>
+                            {% elif results_aa[i].seq[j] != results_aa[0].seq[j] and results_aa[0].seq[j] != '-' %}
+                                
+                                    <td style="background-color: lightgrey;">&nbsp;</td><td style="background-color: lightgrey;"> {{results_aa[i].seq[j]}}</td><td style="background-color: lightgrey;">&nbsp;</td>
+                            
+                            {% elif results_aa[i].seq[j] != results_aa[0].seq[j] and results_aa[0].seq[j] == '-' %}
+                                
+                                    <td style="background-color: white;">&nbsp;</td><td style="background-color: white;"> {{results_aa[i].seq[j]}} </td><td style="background-color: white;">&nbsp;</td>
+                                
+                            {% endif %} 
+                        {%endfor%}
+                    </tr>
+                {%endfor%}
+            </table>
+        </div>
+        <br>
+        <div class="macse_stats"> <!--MACSE STATS-->
+            <p>Alignment length: <span class="blue">{{aln_len}}</span></p>
+            <p>No. of aligned sequences: <span class="blue">{{noseqs}}</span></p>
+            <p>Average pairwise amino acid alignment identity relative to the reference species (%): <span class="blue">{{avg_pairwise_ident}}</span></p>
+            <p>No. of amino acid identical sites across aligned sequences: <span class="blue">{{aa_ident_sites}}</span></p>
+
+            {% if len(excludedsequences) > 0 %}
+                <p>Absent sequences: <span class="blue">{{excludedsequences}}</span></p>
+            {% endif %}
+            {% if int(no_additional_cds) > 0 %}
+                <p>No. of predetermined coding sequences: <span class="blue"> {{no_additional_cds}}</span></p>
+            {% endif %}
+        
+            {% if len(partialsequences_str) > 0 %}
+                <p>Partial sequences: <span class="blue">{{partialsequences_str}}</span></p>
+            {% endif %}
+        </div>
+
+        <div>
+            
+        </div>
+
+        <br>
+        <br>
+        
+        <p>Submit another MACSE alignment:</p>
+
+        <br>
+        <br>
+    
+        <div class="input_form" >
+
+            <form class="input_file_form" action = "http://localhost:5000/uploader_macse" method = "POST" enctype = "multipart/form-data">
+                <label for="fname" data_text="MACSE output aa: The file outputted by pseudochecker v2.0 which contains the aminoacidic sequences in the macse alignment">MACSE output aa:</label> <input type = "file" name = "macseanalysis_aa_ordered" text="Upload macseanalysis_aa_ordered.fasta file"/> 
+            <br>
+                <label for="fname" data_text="MACSE output nt: The file outputted by pseudochecker v2.0 which contains the nucleotidic sequences in the macse alignment">MACSE output nt:</label> <input type = "file" name = "macseanalysis_nt_ordered"  />
+            <br>
+            <!--   <label for="fname">Config params:</label> <input type = "file" name = "config"  />
+            <br> -->
+                <label for="fname" data_text="Data dill file: The first_step_data.dill file outputted by pseudochecker v2.0 which contains information about the analysis">Data dill file:</label> <input type = "file" name = "first_step_data"  />
+            <br>
+                <label for="fname" data_text=" Choose a name for your results ">Analysis Name:</label> <input type = "text" name = "macse_analysis_name" />
+            <br>
+            <input type = "submit"/>
+        </form>   
+    
+        <br>
+        <br>
+    
+        <p class="form_text" ></p> </p>
+        <br>
+        <p class="hidden-text"> </p>
+    
+        <p class="form_text" ></p>  
+        <br>
+    
+        <p class="form_text" ></p>
+    
+    
+        </div>
+
+    </body>
+    <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll('label');
+        const hiddenText = document.querySelector('.hidden-text');
+
+        buttons.forEach(button => {
+            button.addEventListener('mouseover', function() {
+                const buttonText = this.getAttribute('data_text');
+                console.log(buttonText)
+                hiddenText.textContent = buttonText;
+                hiddenText.style.display = 'block';
+
+                // Position the hidden text based on the cursor position
+                const xPos = event.clientX + 10; // Adjust the offset as needed
+                const yPos = event.clientY - 30; // Adjust the offset as needed
+                
+                hiddenText.style.position='fixed';
+                hiddenText.style.left = `${xPos}px`;
+                hiddenText.style.top = `${yPos}px`;
+
+
+            });
+            
+            button.addEventListener('mouseout', function() {
+                hiddenText.style.display = 'none';
+            });
+        });
+
+    });
+    </script>
+</html>
+
+            
+                
+
+
+        

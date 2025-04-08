@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <title>
+            Exon Painter
+        </title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/styles.css') }}">
+    </head>
+    <body>
+        <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+        <div class="header_pages">
+            
+            
+            <a class='label' href="{{ url_for('home') }}">Home Page </a>
+
+            
+            <a class='label' href="{{ url_for('stats') }}" method="POST">Stats </a>
+
+           
+            <a class="label" href="{{ url_for('exon_alignment_display') }}" method="POST">Exons alignments </a>
+            
+
+            <a class="label" href="{{ url_for('macse_alignments') }}" method="POST"> MACSE alignments </a>
+
+            <a class="label" href="{{ url_for('dendrogram')  }}" method="GET"> Dendrogram display </a> 
+
+             
+        </div>
+
+        <div id="exon_painter">
+            <p  style="font-family: Courier New; font-size: 16px; font-weight: bold;">Position of exons in genomic region</p> 
+        <table >
+            
+            {% for i in range(number_of_rows) %}
+                <tr>
+                   
+                    {% for i in range(*list_start_end[i]) %}
+                        
+                        {% if (is_pos_exon(i)) %}
+                            <td style="font-family: Courier New; font-size: 13px; font-weight: bold; color: #454384; background-color: #b1afee;" class='genomic_nt' id="genomic_region_{{i}}"> {{genomic_region[i]}}</td>
+                        {% elif (is_correct_splice_site(i)) %}
+                            <td style="font-family: Courier New; font-size: 13px; font-weight: bold; color: #45b37c;" class='genomic_nt' id="genomic_region_{{i}}"> {{genomic_region[i]}}</td>
+                        {% elif (is_wrong_splice_site(i)) %}
+                            <td style="font-family: Courier New; font-size: 13px; font-weight: bold; color: #b72c35; " class='genomic_nt' id="genomic_region_{{i}}"> {{genomic_region[i]}}</td>
+                        {%else%}
+                            <td style="font-family: Courier New; font-size: 13px; color: #3e3c3c;" class='genomic_nt' id="genomic_region_{{i}}"> {{genomic_region[i]}}</td>
+                        {%endif%}
+                    {% endfor %}
+                   
+                <tr>
+            {% endfor %}
+            <tr>
+                {% for i in range(*list_start_end[-1]) %}
+                    <td style="font-family: Courier New; font-size: 13px; color: #3e3c3c;" class='genomic_nt' id="genomic_region_{{i}}" >{{genomic_region[i]}}</td>
+                {% endfor %}
+            </tr>
+        </table>
+
+        </div>
+        
+    </body>
+    
+</html>

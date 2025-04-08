@@ -1,0 +1,240 @@
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <title>
+            Exon alignment
+        </title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/styles.css') }}">
+    </head>
+    <body>
+
+        <div class="header_pages container">
+            
+            
+            <a class='label' href="{{ url_for('home') }}">Home Page </a>
+
+            
+            <a class='label' href="{{ url_for('stats') }}" method="POST">Stats </a>
+
+           
+            <a class="label" href="{{ url_for('exon_alignment_display') }}" method="POST">Exons alignments </a>
+            
+
+            <a class="label" href="{{ url_for('macse_alignments') }}" method="POST"> MACSE alignments </a>
+
+            <a class="label" href="{{ url_for('dendrogram')  }}" method="GET"> Dendrogram display </a> 
+
+        </div>
+
+          
+
+        <h2 id="exon_alignment_analysis_header">Analysis: {{analysis_name}}</h2>
+
+        <script src="{{ url_for('static', filename='js/app.js') }}">
+            $(window).load(function() {
+                init();
+            });
+        </script>
+        <div class="container">
+            <!--<div class="dropdown">
+                <button class="dropbtn">Options</button>
+                <div id="myDropdown" class="dropdown-content">
+                    <a href="#" id="toolbox_button">Show Positions</a>
+                </div>
+            </div> -->
+
+           
+
+            <div class="toolbox" id="toolbox" >
+                <div class="toolbox_info"><p >Exon: </p><p id="toolbox_exon_n">NA</p> </div>
+                <div class="toolbox_info"><p >Exon Position: </p><p id="nuc_exon_pos">NA</p> </div>
+                <div class="toolbox_info"><p >Global Position: </p><p id="nuc_pos">NA</p></div>
+            </div>
+
+          
+            
+        </div>
+ 
+       
+        {% set num_exons= numtotalexons %}
+        
+        <div class="'container" id="exon_form_div">
+        <form  id='exon_form' action="{{url_for('exon_alignment_display')}}" method="POST" >
+            
+            <input   class='exon_radio' type="radio" name="options" id="option1" value="1" checked >  <label> Exon 1 </label> 
+            {% for n in range(2, num_exons + 1) %}
+                <input  class='exon_radio' type="radio" name="options" id="option{{n}}" value="{{n}}" > <label> Exon {{n}} </label>
+            {% endfor %}
+            
+            <!--<input type="radio" name="options" id="option2" value="2"> Exon 2 </input><br>
+            <input type="radio" name="options" id="option3" value="3"> Exon 3 </input><br> -->
+            <input id='submit_button_exons' class='get_exons_button' style='display:block' type="submit" value="Get exon"> 
+        </form>
+    </div>
+
+
+        <script>
+
+            //this keeps track of wether the toolbox is currently active or not
+            let toolbox_is_shown = false;
+
+            //get button that controls status of toolbox in the dropdown options menu
+            const toolbox_button = document.getElementById('toolbox_button');
+            const toolbox = document.getElementById('toolbox');
+            
+            //function just to pass toolbox as argument to function
+            function showToolbox_intermediate() {
+                showToolbox(toolbox);
+            }
+
+            //add function to button that controls status of toolbox
+            toolbox_button.addEventListener("click", showToolbox_intermediate);
+
+        </script>
+
+        <div class="container" id="cur_exon_title_div">
+            <p id='cur_exon_title' >Exon {{exon_n}}</p>
+        </div>
+
+        <div class="container" id="exon_alignments">
+        {% for target in targets %}  <!--this will create an alignment of one of the exons for each target against the reference exon-->
+            {% set target_exon = targets[target][exon_n] %}  
+            
+            {% if target_exon %}
+                
+                <div class='container' style ="overflow:auto;"> <table style="text-align:center; border-collapse: collapse;">
+                <div style="display: inline-block !important; "><span style="font-family: Courier New; font-size: 14px">{{target}}</span><a  style="float: right; padding-left: 25px;" href="{{ url_for('exon_painter', name=target) }}">Region</a></div>
+                <br>
+                <br>
+        
+                    <div>
+                    <tr>
+               
+                {% if target_exon[2] != 1 %}    
+                        <!--splice site 3'-->
+                    {% if upper_str(target_exon[3]) == "AG" %}
+                        <td style="color: green; font-family: Courier New; font-size: 12px"> {{upper_str(target_exon[3])}} </td>
+                    {% else %} 
+                        <td style="color: red; font-family: Courier New; font-size: 12px"> {{upper_str(target_exon[3])}} </td>
+                    {%endif%}
+                {%endif%}  
+                        
+                <!--target exon-->
+                {% for i in range(target_exon[0] | length ) %}
+                    
+                    {% if target_exon[0][i] != target_exon[1][i] and target_exon[1][i] != '-' and target_exon[0][i]!= '-' %}
+                        <td style="font-family: Courier New; font-size: 12px; color: #9E9E9E;"  class = "nucleotide {{i}} {{get_global_pos(exon_n, i)}}" id="{{target}}_Exon_{{exon_n}}_{{i+1}}">{{target_exon[0][i]}}</td>
+                    {% elif target_exon[0][i] == '-' %} 
+                        <td style="font-family: Courier New; font-size: 12px; color: lightgrey;" class="nucleotide {{i}} {{get_global_pos(exon_n, i)}}" id="{{target}}_Exon_{{exon_n}}_{{i+1}}">{{target_exon[0][i]}}</td>
+                    {%else%} 
+                    <td style="font-family: Courier New; font-size: 12px; background-color: white;" class="nucleotide {{i}} {{get_global_pos(exon_n, i)}}" id="{{target}}_Exon_{{exon_n}}_{{i+1}}">{{target_exon[0][i]}}</td>
+                    {%endif%}
+                    
+                {%endfor%}
+
+                {% if target_exon[2] != numtotalexons %}
+                        <!--splice site 5'-->
+                    {% if upper_str(target_exon[4]) == "GT" %}
+                        <td style="color: green; font-family: Courier New; font-size: 12px"> {{upper_str(target_exon[4])}} </td>
+                    {% else %} 
+                        <td style="color: red; font-family: Courier New; font-size: 12px">  {{upper_str(target_exon[4])}} </td>    
+                    {%endif%}   
+                {%endif%}         
+                    </tr>
+
+
+                    <tr>
+                
+                {% if target_exon[2] != 1 %}
+                        <!--whitespace at the beginning of the reference just to align with target exon-->
+                    <td></td>
+                {%endif%}  
+
+                <!--reference exon-->
+                {% for i in range( target_exon[0] | length ) %}
+                    {% if target_exon[1][i] == '-' %}
+                        <td style="font-family: Courier New; font-size: 12px; color: lightgrey" class="{{i}}">{{target_exon[1][i]}}</td>
+                    {% else %} 
+                        <td style="font-family: Courier New; font-size: 12px; background-color: white" class="{{i}}">{{target_exon[1][i]}}</td>
+                    {%endif%}   
+                {%endfor%}
+
+               
+                
+                {% if target_exon[2] != numtotalexons %}
+                    <!--whitespace at the beginning of the reference just to align with target exon-->
+                    <td></td>
+                {%endif%}
+                    
+                    </tr>
+                    <tr>
+                
+                {% if target_exon[2] != numtotalexons %}
+                    <!--whitespace at the beginning of the reference just to align with target exon-->
+                    <td></td>
+                {%endif%}
+
+                
+                    
+                {#% set cur_pos = namespace(value=pos_exon) %#}
+                {% for i in range(0, len) %}
+                    {% if i % 10 == 0 %}
+                        <td style="font-family: Courier New; font-size: 12px; background-color: white" >|</td>
+                        {#{% set cur_pos.value = cur_pos.value + 10 %#}
+                    {%else%} 
+                        <td></td>
+                    {% endif%}
+                    
+                {% endfor %}
+            </tr>
+                </table>
+                <p style='margin-top: 4px; font-size: 14px;'>Coding exon alignment | Alignment identity (%): <b> {{target_exon[6]}} </b> | Aligning region at the target species' genomic sequence: from <b> {{target_exon[7]}}</b> to <b> {{target_exon[8]}}</b>.</p>
+            </div>
+
+                <p></p>
+
+            {%endif%}
+        {%endfor%}
+
+        </div>
+        
+
+    </body>
+    
+    <script>
+        //change color of premature stop codons
+        //get premature stops from flask 
+        let test_parser = {{global_pstops | tojson | safe}};
+        console.log(test_parser);
+        
+        /*change premature stop codons color to red in the target exon alignments */
+        change_pstops_colors(document, test_parser, {{exon_n}});
+
+        /* get nucPos (global position of the hovered nucleotide) in the toolbox */
+        const nuc_pos = document.getElementById("nuc_pos");
+        const toolbox_exon_n = document.getElementById("toolbox_exon_n")
+        const nuc_exon_pos = document.getElementById("nuc_exon_pos")
+
+        /* get all nucleotides in the target exons */
+        const nucleotides = document.getElementsByClassName("nucleotide");
+
+        // add onmouseover effect to each target exon nucleotide to update the global nucleotide position in the toolbox
+        for (let i = 0; i < nucleotides.length; i++) {
+
+            const nucleotide = nucleotides[i]; 
+            //exon position has to be incremented with ++ because if both exon_pos and global_pos are equal, javascript recognizes both as one html class and only returns one
+            nucleotide.onmouseover = function(){
+                    updateNucPos(nuc_pos, toolbox_exon_n, nuc_exon_pos, true, nucleotide.classList[2], ++nucleotide.classList[1], {{exon_n}});
+                    
+                }
+
+} 
+
+        
+
+        
+        
+    </script>
+</html>

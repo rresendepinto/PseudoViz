@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <title>
+            Home Page
+        </title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/styles.css') }}">
+    </head>
+    <body>
+
+        <div class="header_pages">
+            
+            
+            <a class='label' href="{{ url_for('home') }}">Home Page </a>
+
+            
+            <a class='label' href="{{ url_for('stats') }}" method="POST">Stats </a>
+
+           
+            <a class="label" href="{{ url_for('exon_alignment_display') }}" method="POST">Exons alignments </a>
+            
+
+            <a class="label" href="{{ url_for('macse_alignments') }}" method="POST"> MACSE alignments </a>
+
+             
+        </div>
+
+
+    <div class="input_form" >
+
+        <form class="input_file_form" action = "{{ url_for('uploader_macse') }}" method = "POST" enctype = "multipart/form-data">
+            <label for="fname">MACSE output aa:</label> <input type = "file" name = "macseanalysis_aa_ordered" text="Upload macseanalysis_aa_ordered.fasta file"/> 
+        <br>
+            <label for="fname">MACSE output nt:</label> <input type = "file" name = "macseanalysis_nt_ordered"  />
+        <br>
+        <!--   <label for="fname">Config params:</label> <input type = "file" name = "config"  />
+        <br> -->
+            <label for="fname">Data dill file:</label> <input type = "file" name = "first_step_data"  />
+        <br>
+            <label for="fname">Analysis Name:</label> <input type = "text" name = "macse_analysis_name" />
+        <br>
+        <input type = "submit"/>
+    </form>   
+
+    <br>
+    <br>
+
+    <p class="form_text"> MACSE output aa: The file outputted by pseudochecker v2.0 which contains the aminoacidic sequences in the macse alignment </p>
+    <br>
+
+    <p class="form_text"> MACSE output nt: The file outputted by pseudochecker v2.0 which contains the nucleotidic sequences in the macse alignment </p>  
+    <br>
+
+    <p class="form_text"> Data dill file: The first_step_data.dill file outputted by pseudochecker v2.0 which contains information about the analysis </p>
+
+
+    </div>
+
+        
+
+
+
+</body>
+</html>

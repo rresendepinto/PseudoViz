@@ -1,0 +1,488 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:100,400,300,500,700);
+
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  align-items: center;
+}
+
+h1 {
+  font-family: Courier New; 
+  border-bottom: 5px solid rgba(58, 52, 178, 0.356);
+  border-bottom-width: thin;
+  padding-bottom: 20px;
+  text-align: center;
+  
+  
+  
+  
+}
+
+img{
+  
+  float: right;
+  border-radius: 50%;
+  
+}
+
+#home_top {
+  display: flex; 
+  height: 30px;
+  padding-bottom: 220px;
+  margin: auto;
+  padding-left: 30%;
+  
+}
+
+#home_intro {
+  font-size: 20px;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  padding-bottom: 20px;
+  border-bottom: 5px solid rgba(58, 52, 178, 0.356);
+  border-bottom-width: thin;
+  text-align:  center;
+  
+}
+
+/* Initially hide the text */
+.hidden-text {
+  display: none;
+  position: absolute;
+  background-color: aliceblue;
+  border: 3px #31a4be;
+  border-radius: 3px;
+  padding: 5px; 
+}
+
+
+.table_cell_seq {
+    font-family: Courier New; 
+    font-size: 5px; 
+    background-color:red;
+}
+
+.macse_stats p{
+    line-height: 0.5; font-weight: 300; font-family: Roboto; font-size: 12px; color: rgb(44,44,44);
+}
+
+.blue {color: #626d79e3;}
+
+* {scrollbar-width: thin; scrollbar-color: #4e91c9 #ffffff;} 
+
+.alignment_table{
+    text-align:center; 
+    width:90%; 
+    border-collapse: collapse; 
+    border-spacing:0; 
+    float:right; 
+    font-size: 12.5px
+}
+
+/* here starts styling of file selection form */
+/*
+.input_file_form label {
+    background-color: rgb(62, 105, 136);
+    color: white;
+    padding: 0.5rem;
+    font-family: sans-serif;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    margin-top: 1rem;
+  }
+*/
+  input[type="radio"] {
+    
+      color: hsla(150, 5%, 75%, 1);
+      border-color: hsla(150, 5%, 75%, 1);
+      box-shadow: none;
+      cursor: not-allowed;
+    
+  }
+  
+
+.input_file_form input {
+    /*background-color: rgb(133, 161, 178);*/
+    color: rgb(5, 3, 3);
+    padding: 0.5rem;
+    font-family: sans-serif;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    margin-top: 1rem;
+
+}
+
+.submit_button {
+    background-color: rgb(133, 161, 178);
+    color: rgb(237, 232, 232);
+    padding: 0.5rem;
+    font-family: sans-serif;
+    font-weight: bold;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+
+
+.input_form {
+    float: left;
+    width: 50%;
+    flex:50%;
+}
+
+.form_text{
+    width: 100%;
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.input_form p {
+  display: block;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* here ends styling of file selection form */
+
+.stats_tables table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    min-width: 1500px;
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+}
+
+.stats_tables thead tr {
+    background-color: #31a4be;
+    color:#ffffff;
+    text-align: center;
+    font-weight: bold;
+    border: 2px solid #ffffff  !important;
+    margin: 0px 10px  !important;
+    border-spacing: 80px !important;
+    padding-left: 30px;
+    padding-right: 80px;
+
+}
+
+.stats_tables td{
+    padding: 12px 15px;
+    text-align: center;
+}
+
+.stats_tables td:first-child {
+  text-align: left;
+}
+
+.stats_tables tr{
+    border-bottom: 1px solid #dddddd;
+}
+
+.stats_tables tbody tr:nth-of-type(even){
+    background-color: #eee3e3;
+}
+
+.stats_tables tbody tr:last-of-type {
+    border-bottom: 2px solid #31a4be;
+}
+
+/* The next part of the css is not currently being used, as it was intended to style the tab buttons to change pages at the top */
+/* Style the tab buttons */
+.tablink {
+    background-color: #555;
+    color: white;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    font-size: 17px;
+    width: 25%;
+  }
+  
+.header_pages .label{
+    
+    display: inline-block;
+    margin: 0 0 -1px;
+    padding: 15px 25px;
+    font-weight: 600;
+    text-align: center;
+    color: #4e91c9;
+    border: 1px solid transparent;
+  
+}
+
+/* Set default styles for tab content */
+.tabcontent {
+    color: white;
+    display: none;
+    padding: 50px;
+    text-align: center;
+  }
+
+label {
+  display: inline-block;
+  margin: 0 0 -1px;
+  padding: 15px 25px;
+  font-weight: 600;
+  font-size: 17px;
+  text-align: center;
+  color: #280bbc85;
+  border: 1px solid transparent;
+}
+
+label:before {
+  font-family: fontawesome;
+  font-weight: normal;
+  margin-right: 10px;
+}
+
+label:hover {
+  color: #888;
+  cursor: pointer;
+  
+}
+
+
+
+input:checked + label {
+  color: #555;
+  border: 1px solid #ddd;
+  border-top: 2px solid orange;
+  border-bottom: 1px solid #fff;
+}
+
+/* here ends the style of the tab buttons at the top */
+
+/* Dropdown Button 
+.dropbtn {
+  
+  background-color: #568ca5;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  
+}*/
+
+/* The container <div> - needed to position the dropdown content 
+.dropdown {
+  display: none;
+  position: relative;
+  float: right;
+  padding-right: 36px;
+  border-top: solid 1px rgb(185, 185, 185);
+  clear: both;
+  
+} */
+
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd;}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {display: block;}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {background-color: #3e8e41;} 
+
+#exon_form_div {
+  
+  margin: auto;
+  border: #31a4be7c transparent;
+  width: 90%;
+  height: 10%;
+
+}
+
+#exon_form {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: rgb(16, 3, 3) ; 
+  overflow: scroll;
+  width: auto;
+  max-width: 98%;
+  text-indent: 10px;
+  margin: 10px 2px;
+  min-height: 20px;
+  
+  
+}
+
+#exon_form * {
+  /*padding: 10px 20px 10px 5px;*/
+  white-space: nowrap;
+  
+}
+
+.exon_radio {
+  /*padding: 10px 25px 10px 25px;*/
+}
+
+#exon_form .get_exons_button {
+  display: inline-flex;
+  margin-left: 5px;
+  color: rgb(29, 60, 116);
+}
+
+#cur_exon_title_div {
+  padding: 40px 10% 40px 10%;
+  margin: auto;
+  /*border: #31a4be7c solid;*/
+  
+
+}
+
+#cur_exon_title, .table_name {
+  margin: auto; 
+  text-align: center;
+  padding: 10px 0px;
+  font-size: 20px;
+  color: #31a4be;
+  font-weight: bold;
+}
+
+#exon_alignments {
+  padding-left: 5px; 
+}
+
+#exon_alignment_analysis_header, #macse_alignment_analysis_header{
+  
+  color: rgb(29, 60, 116);
+  font-size: 20px;
+  align-self: center;
+  padding-top: 40px;
+  padding-left: 40px;
+}
+
+.toolbox{
+  /*display: none;*/
+  font-size: 15px;
+  color: black;
+  position: fixed;
+  width: 170px;
+  top: 500px;
+  right: 2%;
+  padding: 2px;
+  line-height: -10px;
+  height: 100px;
+  border:1px solid black;
+}
+
+.toolbox_info p{
+  display: inline-block;
+  justify-content: center;
+  margin: auto;
+  vertical-align: middle;
+  padding: 1px 5px;
+}
+
+#exon_painter {
+overflow:auto;
+top: 100 px;
+right: 100px;
+padding: 10px;
+border:1px solid black;
+border-radius: 25px;
+background-color: rgb(236, 234, 234);
+}
+
+#exon_painter table{
+text-align:center; 
+border-collapse: collapse;
+width: 90%;
+padding-top: 50px;
+padding-right: 100px;
+padding-bottom: 50px;
+padding-left: 100px;
+}
+
+#loader {
+  margin-left: auto;
+  margin-right: auto;
+  border: 7px solid #f3f3f3; /* Light grey */
+  border-top: 6px solid #4e91c9; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 0.7s linear infinite;
+  visibility: hidden;
+}
+
+#submit_button_exons{
+  
+    position: sticky;
+    bottom: 0;
+    right: 0;
+    background-color: rgb(203, 201, 227); 
+    margin-right: 2%;
+}
+
+/* for the caption circles matching the colors with the PseudoIndex */
+.color-code {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+.circle {
+  width: 26px;
+  height: 26px;
+  border-radius:50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  font-size: 70%;
+  stroke-width: 2px;
+  stroke: black;
+}
+.aquamarine { background-color: Aquamarine; }
+.azure { background-color: Azure;  }
+.darkkhaki { background-color: DarkKhaki;  }
+.burlywood { background-color: BurlyWood; }
+.darkorange { background-color: DarkOrange; }
+.darkred { background-color: DarkRed; }
+
+/* Firefox*/
+@-moz-keyframes spin {
+  0% { -moz-transform: rotate(0deg); }
+  100% { -moz-transform: rotate(360deg); }
+}
+
+/* Safari, Chrome, and other WebKit-based browsers */
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+::-webkit-scrollbar {width: 5px; height: 5px;} 
+::-webkit-scrollbar-track {background: white;} 
+::-webkit-scrollbar-thumb {background: #4e91c9;} 
+::-webkit-scrollbar-thumb:hover {background: #626d79e3;} 
+.main_alignment td {font-family: Courier New; font-size: 13px; background-color:white;} 
+#vertical {color: grey; -webkit-transform:rotate(180deg); -moz-transform:rotate(180deg); -o-transform: rotate(90deg); -ms-transform:rotate(90deg); transform: rotate(90deg); white-space:nowrap; display:block; bottom:0; width:2px; height:20px;} 

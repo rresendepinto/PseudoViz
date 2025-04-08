@@ -1,0 +1,184 @@
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <title>
+            Stats
+        </title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/styles.css') }}">
+        <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+        
+    </head>
+    <body>
+        {#<!--
+            <div>
+            <table>
+                <thead>
+                  <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for key, value in pseudoindex.items() %}
+                 <tr>
+                     <td> {{ key }} </td>
+                     <td> {{ value }} </td>
+                 </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+
+              
+        </div>
+    -->#}
+    
+        {#<!--<div class="stats_tables">
+            {% for table in tables %}
+                {{titles[loop.index]}}
+                {{ table|safe }}
+            {% endfor %}
+        </div>-->#}
+    
+        <div class="header_pages">
+            
+            
+            <a class='label' href="{{ url_for('home') }}">Home Page </a>
+
+            
+            <a class='label' href="{{ url_for('stats') }}" method="POST">Stats </a>
+
+           
+            <a class="label" href="{{ url_for('exon_alignment_display') }}" method="POST">Exons alignments </a>
+            
+
+            <a class="label" href="{{ url_for('macse_alignments')  }}" method="POST"> MACSE alignments </a>
+
+            <a class="label" href="{{ url_for('dendrogram')  }}" method="GET"> Dendrogram display </a> 
+
+        </div>
+    
+    <div class="stats_tables" >
+        <p class="table_name" >General stats {#<!--<button class="close-button" value="general_stats_table" type="button" value="" onClick="close_table();">X</button>-->#}</p>
+    <table id="general_stats_table" class="sortable">
+        <thead>
+        <tr>
+            {% for col in titles_general_stats %}
+            <th>{{col}}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in row_data_general_stats %}
+        <tr>
+            {% for col, row_ in zip(titles_general_stats, row) %}
+            
+                <td>{{row_}}</td>
+            
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table >    
+
+       <p class="table_name" > Pseudoindex {#<!--<button class="close-button" value="pseudoindex_stats_table" type="button" onClick="close_table('pseudoindex_stats_table');" >X</button>-->#}</p>
+    <table id = "pseudoindex_stats_table" class="sortable">
+        <thead>
+        <tr>
+            {% for col in  titles_pseudoindex %}
+            <th>{{col}}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in row_data_pseudoindex %}
+        <tr>
+            {% for col, row_ in zip( titles_pseudoindex, row) %}
+            
+                <td>{{row_}}</td>
+            
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+      <p class="table_name" >  Frameshift Mutations:    </p> {#<!-- <button class="close-button" value="frameshift_mutations_table" type="button" onClick="close_table('frameshift_mutations_table');" >X</button>-->#}
+    <table id ="frameshift_mutations_table" class="sortable">
+        <thead>
+        <tr>
+            {% for col in titles_frameshifts %}
+            <th>{{col}}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in row_data_frameshifts %}
+        <tr>
+            {% for col, row_ in zip(titles_frameshifts, row) %}
+            
+                <td>{{row_}}</td>
+            
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        
+        </tbody>
+    
+    </table>
+    
+    <p class="table_name" >  Premature Stop Mutations:    </p> 
+    <table id ="premature_stops_table" class="sortable">
+        <thead>
+        <tr>
+            {% for col in titles_pstops %}
+            <th>{{col}}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in row_data_pstops %}
+        <tr>
+            {% for col, row_ in zip(titles_pstops, row) %}
+            
+                <td>{{row_}}</td>
+            
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        
+        </tbody>
+    
+    </table>
+    
+    
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}">
+        $(window).load(function() {
+                init();
+            });
+    </script>
+
+    <script > 
+
+        const close_buttons = document.getElementsByClassName("close-button");
+        console.log(close_buttons)
+
+        for (let i = 0; i < close_buttons.length; i++) {
+            table_id = document.getElementById(close_buttons[i].value)
+            console.log(`table_id: ${table_id}`)
+            close_buttons[i].onclick = function(){
+                close_table( table_id );
+            }
+        }
+    </script>
+    
+    
+
+    </body>
+
+    
+
+    

@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <title>
+            Home Page
+        </title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/styles.css') }}">
+    </head>
+
+    <body style="background-color: aliceblue;">
+
+        
+        <div id='home_top' >
+            
+            <div style="float: left; width:30%">
+
+            
+                <h1>PseudoViz        </h1>
+
+                <p id='home_intro'> Visualization of results from pseudochecker v2.0 analyses for gene inactivation inference</p>
+            
+            </div>
+
+            
+            <img src="{{ url_for('static', filename='image1.jpeg') }}" alt="image1" width="200" height="200">
+            
+
+            
+        
+        </div>
+
+        <div id='input_forms_containers' style="padding: 10px 10%;">
+
+            <div class="input_form" >
+
+                <form  class="input_file_form" action = "{{ url_for('uploader') }}" method = "POST" enctype = "multipart/form-data">
+                    <p class="form_text"> Load preprocessed data: </p>
+
+                    <label for="fname" data_text=" Please input the file with exons and coding sequence used as reference for the pseudochecker analysis ">Reference file:</label> <input type = "file" name = "file" /> 
+                    <p class="hidden-text"> </p>
+                
+                <br>
+                    <label for="fname" data_text=" Please input the json file outputted by pseudochecker analysis ">Exon data file:</label> <input type = "file" name = "exons_data" />
+                <br>
+                    <label for="fname" data_text=" Choose a name for your results ">Analysis Name:</label> <input type = "text" name = "analysis_name"/>
+                <br>
+                    <label for="fname" data_text=" Fasta file with the genomic regions used for pseudochecker analysis ">Fasta:</label> <input type = "file" name = "genomic_fasta" data_text="Upload reference file"/>
+                <br>
+                <input class='submit_button' type = "submit"/>
+                </form>   
+                <br>
+                <br>
+                
+                <form  class="input_file_form" action = "{{ url_for('upload_example') }}" method = "POST" enctype = "multipart/form-data">
+                
+                <label for="fname">Load example data:</label><input type = "submit"/>
+                </form>
+
+                <!--
+                <p class="form_text" > Reference file: Please input the file with exons and coding sequence used as reference for the pseudochecker analysis </p>
+                <br>
+
+                <p class="form_text"> Exon data file: Please input the json file outputted by pseudochecker analysis </p>
+                <br>
+
+                <p class="form_text"> Analysis Name: Choose a name for your results </p>
+                -->
+
+            </div> 
+
+            <!--
+            <div class="input_form">
+                <form  class="input_file_form" action = "{{ url_for('processing') }}" method = "POST" enctype = "multipart/form-data">
+                    <p class="form_text"> Run pseudochecker </p>
+
+                        <label for="fname" data_text=" Please input the file with exons and coding sequence for reference ">Reference file:</label> <input type = "file" name = "file" text="Upload reference file"/> 
+                    <br>
+                        <label for="fname" data_text=" Choose a name for your results ">Analysis Name:</label> <input type = "text" name = "analysis_name" />
+                    <br>
+                        <label for="fname" data_text=" Fasta file with the genomic regions ">Fasta:</label> <input type = "file" name = "genomic_fasta" />
+                    <br>
+                    <input class="submit_button" type = "submit" onclick="loading();"/>
+            </form>   
+            </div>
+        -->
+            <!-- add here a input form to run pseudochecker and a loading div that shows up in front of the page when submit-->
+            <div id=loader class="loader">
+
+            </div>
+        
+        </div>
+                            
+    <script >
+
+        function loading(){
+
+        //console.log('display will now be inline');
+        const loader = document.getElementById('loader');
+        //loader.style.display = "inline";
+        loader.style.visibility='visible';
+
+        const input_forms = document.querySelectorAll('label');
+        input_forms.forEach(function(div) {
+            label.style.visibility = 'hidden'
+            
+        });
+    };
+        document.addEventListener("DOMContentLoaded", function () {
+            const buttons = document.querySelectorAll('label');
+            const hiddenText = document.querySelector('.hidden-text');
+
+            buttons.forEach(button => {
+                button.addEventListener('mouseover', function() {
+                    const buttonText = this.getAttribute('data_text');
+                    console.log(buttonText)
+                    hiddenText.textContent = buttonText;
+                    hiddenText.style.display = 'block';
+
+                    // Position the hidden text based on the cursor position
+                    const xPos = event.clientX + 10; // Adjust the offset as needed
+                    const yPos = event.clientY - 30; // Adjust the offset as needed
+
+                    hiddenText.style.left = `${xPos}px`;
+                    hiddenText.style.top = `${yPos}px`;
+
+                });
+
+                button.addEventListener('mouseout', function() {
+                    hiddenText.style.display = 'none';
+                });
+            });
+        });
+        
+    </script>
+
+ 
+    </body>
+</html>

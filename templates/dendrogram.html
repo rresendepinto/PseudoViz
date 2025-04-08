@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+  <title>
+      Dendrogram display
+  </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/styles.css') }}">
+</head>
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<body>
+
+    <div class="header_pages">
+              
+              
+      <a class='label' href="{{ url_for('home') }}">Home Page </a>
+
+      
+      <a class='label' href="{{ url_for('stats') }}" method="POST">Stats </a>
+
+    
+      <a class="label" href="{{ url_for('exon_alignment_display') }}" method="POST">Exons alignments </a>
+      
+
+      <a class="label" href="{{ url_for('macse_alignments') }}" method="POST"> MACSE alignments </a>
+
+      <a class="label" href="{{ url_for('dendrogram')  }}" method="GET"> Dendrogram display </a> 
+
+
+      
+  </div>
+
+
+    <h1 style="display: inline-block; margin: 0 0 -1px;  font-size: 15px ; padding: 35px 15px ; font-weight: 100; text-align: center; color: #4e91c9; border: 1px solid transparent;">Upload your JSON Data</h1>
+    <form id="uploadForm" method="post" enctype="multipart/form-data">
+        <input type="file" name="datafile" id="datafile" accept=".json">
+        <input type="button" value="Upload" onclick="uploadFile()">
+    </form>
+
+    <div class="color-code">
+      <p style="color: #4e91c9; font-weight: 100;">Pseudoindex:</p>
+      <div class="circle aquamarine">0</div>
+      <div class="circle azure">1</div>
+      <div class="circle darkkhaki">2</div>
+      <div class="circle burlywood">3</div>
+      <div class="circle darkorange">4</div>
+      <div class="circle darkred">5</div>
+  </div>
+
+  <!--<input type="range" id="heightSlider" min="100" max="10000" value="500">-->
+
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
+
+      
+</body>
+
+<style>
+  .tooltip {   
+  position: absolute;           
+  text-align: center;           
+  width: auto;   
+  min-width: 250px;               
+  height: auto;                 
+  padding: 2px;             
+  font: 12px sans-serif;        
+  background: lightsteelblue;   
+  border: 0px;    
+  border-radius: 8px;           
+  pointer-events: none;         
+}
+</style>
+
+<script>
+
+// Set the dimensions and margins of the graph
+var margin = {top: 20, right: 90, bottom: 30, left: 90},
+    width = 1920 - margin.left - margin.right,
+    height = 100000 - margin.top - margin.bottom;
+
+// Append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom);
+    
+
+// Create a group element for all the graph elements
+var g = svg.append("g")
+  
+// Define a color scale for your functional states 
+var colorScale = d3.scaleOrdinal()
+  .domain(["0", "1", "2", "3", "4", "5"])
+  .range(["Aquamarine" , "Azure", "DarkKhaki", "BurlyWood", "DarkOrange", "DarkRed"]);
+
+// Define the div for the tooltip
+var tooltip = d3.select("body").append("div") 
+    .attr("class", "tooltip")             
+    .style("opacity", 0);
+
+// Move the 'g' element to the correct position
+g.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+function uploadFile() {
+            
+            var form = document.getElementById('uploadForm');
+            var formData = new FormData(form);
+            var fileInput = document.getElementById('datafile');
+            var file = fileInput.files[0];
+            formData.append('datafile', file);
+            console.log('file')
+            fetch('/upload_tree', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Call a function to render the dendrogram
+                console.log(data)
+                
+                if (data){
+                renderDendrogram(data);
+                } else {
+                    console.error('Received null data');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+
+// Read json data
+function renderDendrogram(data) {
+
+   
+   var root = d3.hierarchy(data, function(d) {
+    console.log
+    return d.children;
+  });
+  var leaves = root.leaves().length;
+    
+  // Create the cluster layout:
+  var cluster = d3.cluster() 
+    .size([leaves*40, width - 500]); // Adjust cluster size for new orientation
+
+ // Give the data to this cluster layout:
+  cluster(root);
+
+  // Add the links between nodes:
+  g.selectAll('path')
+    .data( root.descendants().slice(1) )
+    .enter()
+    .append('path')
+    .attr("d", function(d) {
+        return "M" + d.parent.y + "," + d.parent.x
+                + "V" + d.x + "H" + d.y;
+    })
+    .style("fill", 'none')
+    .attr("stroke", '#ccc');
+
+  // Add a circle for each node.
+  g.selectAll("g.node")
+    .data(root.descendants())
+    .enter()
+    .append("g")
+    .attr("class", "node")
+    .attr("transform", function(d) {
+      return "translate(" + d.y + "," + d.x + ")"
+    })
+    .append("circle")
+      .attr("r", 7)
+      .attr("stroke", "black")
+      .style("stroke-width", 2)
+      .style("fill", function(d) {
+    // Use the functionalState to determine the color
+    return colorScale(d.data.Pseudoindex);
+  })
+  .on("mouseover", function(d) {
+    tooltip.transition()        
+      .duration(200)      
+      .style("opacity", .9); 
+
+  var mutationInfo = "";
+  if (d.data.mutations && d.data.mutations.length > 0) {
+    mutationInfo = d.data.mutations.map(function(mutation) {
+      return "Exon: " + mutation.exon + ", Position: " + mutation.position + ", Type: " + mutation.type + ", Length: " + mutation.length;
+    }).join("<br/>");
+  } else {
+    mutationInfo = "No mutations";
+  }
+
+  tooltip.html(d.data.name + "<br/>" + mutationInfo)
+      .style("left", (d3.event.pageX) + "px")     
+      .style("top", (d3.event.pageY - 28) + "px");
+  })                  
+  .on("mouseout", function(d) {       
+    tooltip.transition()        
+        .duration(500)      
+        .style("opacity", 0);   
+  });
+
+  // Add text labels to each node.
+  g.selectAll("g.node")
+    .append("text")
+    .attr("dy", ".35em")
+    .attr("x", function(d) { 
+     console.log(d); // Check if d is defined and has the expected structure
+      return d.children ? -13 : 50; })
+    .style("text-anchor", function(d) {
+      return d.children ? "end" : "start";
+    })
+    .style("font-size", "14px")
+    .text(function(d) { return d.data.name; })
+    .call(wrap, 100); // Wrap text labels to avoid overlap
+
+    function zoom(d) {
+        var nodes = svg.selectAll(".node");
+        nodes.attr("transform", transform);
+
+        // Update the links...
+        var link = svg.selectAll(".link");
+        link.attr("d", translate);
+
+    }
+
+
+
+// Define the zoom behavior for D3 v4
+    svg.call(d3.behavior.zoom()
+        .x(x)
+        .y(y)
+        .scaleExtent([1,8])
+        .on("zoom", zoom));
+
+// adjust height based on slider
+document.getElementById('heightSlider').addEventListener('input', function() {
+    var newHeight = this.value;
+    svg.attr('height', newHeight);
+      });
+  // Function to wrap text for labels
+  function wrap(text, width) {
+    text.each(function() {
+      var text = d3.select(this),
+          words = text.text().split(/\s+/).reverse(),
+          word,
+          line = [],
+          lineNumber = 0,
+          lineHeight = 1.1, // ems
+          y = text.attr("y"),
+          dy = parseFloat(text.attr("dy")),
+          // adds the tspan with the name of the species,with x, y and dy for positioning, x - horizontal, y - vertical, dy is adjusted based on the lineNumber to place each tspan below the previous one
+          tspan = text.text(null).append("tspan").attr("x", function(d) { return (d.source.y + d.target.y) / 4; }).attr("y", y).attr("dy", dy + "em");
+      while (word = words.pop()) {
+        line.push(word);
+        tspan.text(line.join(" "));
+        if (tspan.node().getComputedTextLength() > width) {
+          line.pop();
+          tspan.text(line.join(" "));
+          line = [word];
+          tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+        }
+      }
+    });
+  }
+
+}
+
+</script>
